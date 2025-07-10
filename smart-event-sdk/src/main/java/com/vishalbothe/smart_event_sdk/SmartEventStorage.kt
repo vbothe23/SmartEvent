@@ -22,7 +22,7 @@ class SmartEventStorage(context: Context) {
         val values = ContentValues().apply {
             put("id", eventId)
             put("name", eventName)
-            put("property", propertiesJson)
+            put("properties", propertiesJson)
             put("timestamp", timestamp)
             put("synced", 0)
         }

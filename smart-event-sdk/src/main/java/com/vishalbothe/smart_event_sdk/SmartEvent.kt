@@ -3,6 +3,10 @@ package com.vishalbothe.smart_event_sdk
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.concurrent.Executors
 
 object SmartEvent {
@@ -21,6 +25,7 @@ object SmartEvent {
     fun init(context: Context) {
         if (isInitialized) return
         storage = SmartEventStorage(context)
+
         uploader = SmartEventUploader()
         isInitialized = true
     }
@@ -40,9 +45,9 @@ object SmartEvent {
         val shouldLogEvent = eventFilter?.invoke(eventName, properties) ?: true
         if (!shouldLogEvent) return
 
-        executor.execute {
+        CoroutineScope(Dispatchers.IO).launch {
             val eventId = storage.insertEvent(eventName, properties)
-            mainHandler.post {
+            withContext(Dispatchers.Main) {
                 eventListener?.onEventStored(eventId)
             }
         }
@@ -51,18 +56,18 @@ object SmartEvent {
     fun flush() {
         if (!isInitialized) throw IllegalStateException("smartEvent not initialized!!")
 
-        executor.execute {
+        CoroutineScope(Dispatchers.IO).launch {
             val unSyncedEvents = storage.getUnSyncedEvents()
             if (unSyncedEvents.isEmpty()) {
                 mainHandler.post {
                     eventListener?.onFlushCompleted(0, 0)
                 }
-                return@execute
+                return@launch
             }
             val (successIds, failedIds) = uploader.upload(unSyncedEvents)
             storage.markEventAsSynced(successIds)
 
-            mainHandler.post {
+            withContext(Dispatchers.Main) {
                 eventListener?.onFlushCompleted(successIds.size, failedIds.size)
             }
         }

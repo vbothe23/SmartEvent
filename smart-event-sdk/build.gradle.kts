@@ -38,7 +38,17 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.gson)
+    implementation(libs.coroutines)
+
+    implementation(libs.retrofit2)
+    implementation(libs.retrofit2ConverterGson)
+    implementation(libs.retrofitMock)
+
+
     testImplementation(libs.junit)
+    testImplementation(libs.mockitoCore)
+    testImplementation(libs.coroutineTest)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+
 }
