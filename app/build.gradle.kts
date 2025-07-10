@@ -49,6 +49,9 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.viewmodel)
+    implementation(libs.livedata)
+    implementation(libs.gson)
 
     implementation(project(":smart-event-sdk"))
 
