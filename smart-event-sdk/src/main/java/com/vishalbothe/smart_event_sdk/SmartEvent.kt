@@ -3,13 +3,21 @@ package com.vishalbothe.smart_event_sdk
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
+import androidx.annotation.VisibleForTesting
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.concurrent.Executors
 
-object SmartEvent {
+object SmartEvent{
+    private var coroutineDispatcher: CoroutineDispatcher = Dispatchers.IO
+
+    @VisibleForTesting
+    fun setDispatcherForTesting(dispatcher: CoroutineDispatcher) {
+        coroutineDispatcher = dispatcher
+    }
 
     private lateinit var storage: SmartEventStorage
     private lateinit var uploader: SmartEventUploader
@@ -42,7 +50,7 @@ object SmartEvent {
         val shouldLogEvent = eventFilter?.invoke(eventName, properties) ?: true
         if (!shouldLogEvent) return
 
-        CoroutineScope(Dispatchers.IO).launch {
+        CoroutineScope(coroutineDispatcher).launch {
             val eventId = storage.insertEvent(eventName, properties)
             withContext(Dispatchers.Main) {
                 eventListener?.onEventStored(eventId)
@@ -53,7 +61,7 @@ object SmartEvent {
     fun flush() {
         if (!isInitialized) throw IllegalStateException("smartEvent not initialized!!")
 
-        CoroutineScope(Dispatchers.IO).launch {
+        CoroutineScope(coroutineDispatcher).launch {
             val unSyncedEvents = storage.getUnSyncedEvents()
             if (unSyncedEvents.isEmpty()) {
                 withContext(Dispatchers.Main) {
