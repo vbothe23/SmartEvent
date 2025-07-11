@@ -2,8 +2,6 @@ package com.vishalbothe.smartevent
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import com.vishalbothe.smart_event_sdk.SmartEvent
 import com.vishalbothe.smart_event_sdk.SmartEventListener
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,22 +26,12 @@ class MainViewModel: ViewModel() {
         )
     }
 
-    fun logEvent(eventName: String, propsJson: String) {
+    fun logEvent(eventName: String, props: Map<String, Any>) {
         viewModelScope.launch {
             if (eventName.isBlank()) {
                 _status.value = "Please enter event name"
                 return@launch
             }
-
-            val props: Map<String, Any>? = if (propsJson.isNotBlank()) {
-                try {
-                    val type = object : TypeToken<Map<String, Any>>() {}.type
-                    Gson().fromJson<Map<String, Any>>(propsJson, type)
-                } catch (e: Exception) {
-                    _status.value = "Invalid JSON!"
-                    return@launch
-                }
-            } else null
 
             SmartEvent.log(eventName, props)
         }
