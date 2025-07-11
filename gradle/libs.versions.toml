@@ -19,6 +19,8 @@ retrofitMock = "2.9.0"
 retrofit2ConverterGson = "2.9.0"
 mockito = "5.2.0"
 coroutineTest = "1.7.3"
+jupiter = "5.10.0"
+jupiterEngine = "5.10.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -43,6 +45,8 @@ coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core"
 retrofit2 = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 retrofit2ConverterGson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit2ConverterGson" }
 retrofitMock = { group = "com.squareup.retrofit2", name = "retrofit-mock", version.ref = "retrofitMock" }
+jupiter = { group = "org.junit.jupiter", name = "junit-jupiter-api", version.ref = "jupiter" }
+jupiterEnginer = { group = "org.junit.jupiter", name = "junit-jupiter-engine", version.ref = "jupiterEngine" }
 
 mockitoCore = { group = "org.mockito", name = "mockito-core", version.ref = "mockito" }
 coroutineTest = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutineTest" }

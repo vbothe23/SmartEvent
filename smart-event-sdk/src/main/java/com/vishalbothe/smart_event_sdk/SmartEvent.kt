@@ -14,9 +14,6 @@ object SmartEvent {
     private lateinit var storage: SmartEventStorage
     private lateinit var uploader: SmartEventUploader
 
-    private val executor = Executors.newSingleThreadExecutor()
-    private val mainHandler = Handler(Looper.getMainLooper())
-
     private var eventFilter: ((String, Map<String, Any>?) -> Boolean)? = null
     private var eventListener: SmartEventListener? = null
 
@@ -59,11 +56,12 @@ object SmartEvent {
         CoroutineScope(Dispatchers.IO).launch {
             val unSyncedEvents = storage.getUnSyncedEvents()
             if (unSyncedEvents.isEmpty()) {
-                mainHandler.post {
+                withContext(Dispatchers.Main) {
                     eventListener?.onFlushCompleted(0, 0)
                 }
                 return@launch
             }
+
             val (successIds, failedIds) = uploader.upload(unSyncedEvents)
             storage.markEventAsSynced(successIds)
 
